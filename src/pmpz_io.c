@@ -181,3 +181,46 @@ PGMP_PG_FUNCTION(pmpz_to_int2)
     out = mpz_get_si(q);
     PG_RETURN_INT16(out);
 }
+
+PGMP_PG_FUNCTION(pmpz_to_int8)
+{
+    const pmpz      *pz;
+    const mpz_t     q;
+    int64           out;
+    char            *buffer;
+    bool            error;
+
+    pz = PG_GETARG_PMPZ(0);
+    mpz_from_pmpz(q, pz);
+
+#if LONG_MAX == INT64_MAX
+
+    if (!mpz_fits_slong_p(q))
+		error=true;
+    else
+        out = mpz_get_si(q);
+
+#elif LONG_MAX == INT32_MAX
+
+    buffer = mpz_get_str(NULL, 10, q);
+
+    error=false;
+    if (mpz_size(q)>2) error=true;
+    if (mpz_size(q)==2) {
+        if (q[0]._mp_d[1]>0x7fffffff)
+            error=true;
+	}
+
+    if (!error)
+        sscanf(buffer,"%lld",&out);
+
+#endif
+
+    if (error) {
+        ereport(ERROR,
+                (errcode(ERRCODE_NUMERIC_VALUE_OUT_OF_RANGE),
+                 errmsg("numeric value too big to be converted in biginteger data type")));
+    }
+
+    PG_RETURN_INT64(out);
+}

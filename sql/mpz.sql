@@ -73,6 +73,10 @@ SELECT 32767::mpz::smallint;
 SELECT -32767::mpz::smallint;
 SELECT 32768::mpz::smallint;
 SELECT -32768::mpz::smallint;
+SELECT 9223372036854775807::mpz::bigint;
+SELECT -9223372036854775807::mpz::bigint;
+SELECT 9223372036854775808::mpz::bigint;
+SELECT -9223372036854775808::mpz::bigint;
 
 
 --

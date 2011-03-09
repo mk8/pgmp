@@ -98,6 +98,14 @@ SELECT 32768::mpz::smallint;
 ERROR:  numeric value too big to be converted in smallint data type
 SELECT -32768::mpz::smallint;
 ERROR:  numeric value too big to be converted in smallint data type
+SELECT 9223372036854775807::mpz::bigint;
+9223372036854775807
+SELECT -9223372036854775807::mpz::bigint;
+-9223372036854775807
+SELECT 9223372036854775808::mpz::bigint;
+ERROR:  numeric value too big to be converted in biginteger data type
+SELECT -9223372036854775808::mpz::bigint;
+ERROR:  numeric value too big to be converted in biginteger data type
 --
 -- mpz arithmetic
 --

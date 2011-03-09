@@ -101,6 +101,16 @@ WITH FUNCTION pmpz_to_int2(mpz)
 AS IMPLICIT;
 
 
+CREATE OR REPLACE FUNCTION pmpz_to_int8(mpz)
+RETURNS int8
+AS 'MODULE_PATHNAME', 'pmpz_to_int8'
+LANGUAGE C IMMUTABLE STRICT;
+
+CREATE CAST (mpz AS int8)
+WITH FUNCTION pmpz_to_int8(mpz)
+AS IMPLICIT;
+
+
 -- TODO: stub - only good for ints
 CREATE CAST (numeric AS mpz)
 WITH INOUT
