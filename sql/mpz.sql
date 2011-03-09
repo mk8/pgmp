@@ -65,6 +65,15 @@ SELECT -1000000000::mpz;
 SELECT -1000000000000000::mpz;
 SELECT -1000000000000000000000000000000::mpz;
 
+SELECT 2147483647::mpz::integer;
+SELECT -2147483647::mpz::integer;
+SELECT 2147483648::mpz::integer;
+SELECT -2147483648::mpz::integer;
+SELECT 32767::mpz::smallint;
+SELECT -32767::mpz::smallint;
+SELECT 32768::mpz::smallint;
+SELECT -32768::mpz::smallint;
+
 
 --
 -- mpz arithmetic

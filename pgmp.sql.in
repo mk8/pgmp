@@ -81,6 +81,26 @@ WITH FUNCTION mpz_from_int8(int8)
 AS IMPLICIT;
 
 
+CREATE OR REPLACE FUNCTION int4_from_pmpz(mpz)
+RETURNS int4
+AS 'MODULE_PATHNAME', 'int4_from_pmpz'
+LANGUAGE C IMMUTABLE STRICT;
+
+CREATE CAST (mpz AS int4)
+WITH FUNCTION int4_from_pmpz(mpz)
+AS IMPLICIT;
+
+
+CREATE OR REPLACE FUNCTION int2_from_pmpz(mpz)
+RETURNS int2
+AS 'MODULE_PATHNAME', 'int2_from_pmpz'
+LANGUAGE C IMMUTABLE STRICT;
+
+CREATE CAST (mpz AS int2)
+WITH FUNCTION int2_from_pmpz(mpz)
+AS IMPLICIT;
+
+
 -- TODO: stub - only good for ints
 CREATE CAST (numeric AS mpz)
 WITH INOUT

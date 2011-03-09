@@ -82,6 +82,22 @@ SELECT -1000000000000000::mpz;
 -1000000000000000
 SELECT -1000000000000000000000000000000::mpz;
 -1000000000000000000000000000000
+SELECT 2147483647::mpz::integer;
+2147483647
+SELECT -2147483647::mpz::integer;
+-2147483647
+SELECT 2147483648::mpz::integer;
+ERROR:  numeric value too big to be converted in integer data type
+SELECT -2147483648::mpz::integer;
+ERROR:  numeric value too big to be converted in integer data type
+SELECT 32767::mpz::smallint;
+32767
+SELECT -32767::mpz::smallint;
+-32767
+SELECT 32768::mpz::smallint;
+ERROR:  numeric value too big to be converted in smallint data type
+SELECT -32768::mpz::smallint;
+ERROR:  numeric value too big to be converted in smallint data type
 --
 -- mpz arithmetic
 --
