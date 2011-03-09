@@ -81,23 +81,23 @@ WITH FUNCTION mpz_from_int8(int8)
 AS IMPLICIT;
 
 
-CREATE OR REPLACE FUNCTION int4_from_pmpz(mpz)
+CREATE OR REPLACE FUNCTION pmpz_to_int4(mpz)
 RETURNS int4
-AS 'MODULE_PATHNAME', 'int4_from_pmpz'
+AS 'MODULE_PATHNAME', 'pmpz_to_int4'
 LANGUAGE C IMMUTABLE STRICT;
 
 CREATE CAST (mpz AS int4)
-WITH FUNCTION int4_from_pmpz(mpz)
+WITH FUNCTION pmpz_to_int4(mpz)
 AS IMPLICIT;
 
 
-CREATE OR REPLACE FUNCTION int2_from_pmpz(mpz)
+CREATE OR REPLACE FUNCTION pmpz_to_int2(mpz)
 RETURNS int2
-AS 'MODULE_PATHNAME', 'int2_from_pmpz'
+AS 'MODULE_PATHNAME', 'pmpz_to_int2'
 LANGUAGE C IMMUTABLE STRICT;
 
 CREATE CAST (mpz AS int2)
-WITH FUNCTION int2_from_pmpz(mpz)
+WITH FUNCTION pmpz_to_int2(mpz)
 AS IMPLICIT;
 
 

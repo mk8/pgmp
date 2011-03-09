@@ -144,7 +144,7 @@ _pmpz_from_long(long in)
 }
 
 
-PGMP_PG_FUNCTION(int4_from_pmpz)
+PGMP_PG_FUNCTION(pmpz_to_int4)
 {
     const pmpz      *pz;
     const mpz_t     q;
@@ -163,7 +163,7 @@ PGMP_PG_FUNCTION(int4_from_pmpz)
     PG_RETURN_INT32(out);
 }
 
-PGMP_PG_FUNCTION(int2_from_pmpz)
+PGMP_PG_FUNCTION(pmpz_to_int2)
 {
     const pmpz      *pz;
     const mpz_t     q;
