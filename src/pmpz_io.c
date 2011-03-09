@@ -147,8 +147,8 @@ _pmpz_from_long(long in)
 PGMP_PG_FUNCTION(int4_from_pmpz)
 {
     const pmpz      *pz;
-	const mpz_t		q;
-	int32 out;
+    const mpz_t     q;
+    int32           out;
 
     pz = PG_GETARG_PMPZ(0);
     mpz_from_pmpz(q, pz);
@@ -157,17 +157,17 @@ PGMP_PG_FUNCTION(int4_from_pmpz)
         ereport(ERROR,
                 (errcode(ERRCODE_NUMERIC_VALUE_OUT_OF_RANGE),
                  errmsg("numeric value too big to be converted in integer data type")));
-	}
+    }
 
-	out = mpz_get_si(q);
-	PG_RETURN_INT32(out);
+    out = mpz_get_si(q);
+    PG_RETURN_INT32(out);
 }
 
 PGMP_PG_FUNCTION(int2_from_pmpz)
 {
     const pmpz      *pz;
-	const mpz_t		q;
-	int16 out;
+    const mpz_t     q;
+    int16           out;
 
     pz = PG_GETARG_PMPZ(0);
     mpz_from_pmpz(q, pz);
@@ -176,8 +176,8 @@ PGMP_PG_FUNCTION(int2_from_pmpz)
         ereport(ERROR,
                 (errcode(ERRCODE_NUMERIC_VALUE_OUT_OF_RANGE),
                  errmsg("numeric value too big to be converted in smallint data type")));
-	}
+    }
 
-	out = mpz_get_si(q);
-	PG_RETURN_INT16(out);
+    out = mpz_get_si(q);
+    PG_RETURN_INT16(out);
 }
