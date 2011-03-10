@@ -188,7 +188,6 @@ PGMP_PG_FUNCTION(pmpz_to_int8)
     const mpz_t     z;
     int64           out;
     char            *buffer;
-    short           error;
     mp_limb_t       msLimb;
 
     pz = PG_GETARG_PMPZ(0);
@@ -196,34 +195,34 @@ PGMP_PG_FUNCTION(pmpz_to_int8)
 
 #if LONG_MAX == INT64_MAX
 
-    if (!mpz_fits_slong_p(z))
-        error = true;
-    else
+    if (!mpz_fits_slong_p(z)) {
+        goto errorNotInt8Value;
+    } else {
         out = mpz_get_si(z);
+    }
 
 #elif LONG_MAX == INT32_MAX
 
     buffer = mpz_get_str(NULL, 10, z);
 
-    error = false;
-    if (mpz_size(z) > 2) error = true;
+    if (mpz_size(z) > 2) {
+        goto errorNotInt8Value;
+    }
     if (mpz_size(z) == 2) {
         msLimb = mpz_getlimbn(z,1);
         if (msLimb > 0x7fffffff) {
-            error = true;
+            goto errorNotInt8Value;
         }
     }
 
-    if (!error)
-        sscanf(buffer,"%lld",&out);
+    sscanf(buffer,"%lld",&out);
 
 #endif
-
-    if (error) {
-        ereport(ERROR,
-                (errcode(ERRCODE_NUMERIC_VALUE_OUT_OF_RANGE),
-                 errmsg("numeric value too big to be converted in biginteger data type")));
-    }
-
     PG_RETURN_INT64(out);
+
+errorNotInt8Value:
+    ereport(ERROR,
+            (errcode(ERRCODE_NUMERIC_VALUE_OUT_OF_RANGE),
+             errmsg("numeric value too big to be converted in biginteger data type")));
+
 }
