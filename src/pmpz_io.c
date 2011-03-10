@@ -186,14 +186,11 @@ PGMP_PG_FUNCTION(pmpz_to_int8)
 {
     const pmpz      *pz;
     const mpz_t     z;
-    const mpz_t     z0;
     int64           out;
     mp_limb_t       msLimb=0;
 
     pz = PG_GETARG_PMPZ(0);
     mpz_from_pmpz(z, pz);
-
-    mpz_init_set_si (z0, 0);
 
 #if LONG_MAX == INT64_MAX
 
@@ -221,7 +218,7 @@ PGMP_PG_FUNCTION(pmpz_to_int8)
         msLimb = mpz_getlimbn(z,0);
         out |= msLimb;
     }
-    if (mpz_cmp(z,z0)<0) {
+    if (SIZ(z)<0) {
         out = -out;
     }
     
