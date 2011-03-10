@@ -186,12 +186,14 @@ PGMP_PG_FUNCTION(pmpz_to_int8)
 {
     const pmpz      *pz;
     const mpz_t     z;
+    const mpz_t     z0;
     int64           out;
-    char            *buffer;
-    mp_limb_t       msLimb;
+    mp_limb_t       msLimb=0;
 
     pz = PG_GETARG_PMPZ(0);
     mpz_from_pmpz(z, pz);
+
+    mpz_init_set_si (z0, 0);
 
 #if LONG_MAX == INT64_MAX
 
@@ -203,8 +205,6 @@ PGMP_PG_FUNCTION(pmpz_to_int8)
 
 #elif LONG_MAX == INT32_MAX
 
-    buffer = mpz_get_str(NULL, 10, z);
-
     if (mpz_size(z) > 2) {
         goto errorNotInt8Value;
     }
@@ -215,8 +215,16 @@ PGMP_PG_FUNCTION(pmpz_to_int8)
         }
     }
 
-    sscanf(buffer,"%lld",&out);
-
+    out = msLimb;
+    out = out << 32;
+    if (mpz_size(z) > 0) {
+        msLimb = mpz_getlimbn(z,0);
+        out |= msLimb;
+    }
+    if (mpz_cmp(z,z0)<0) {
+        out = -out;
+    }
+    
 #endif
     PG_RETURN_INT64(out);
 

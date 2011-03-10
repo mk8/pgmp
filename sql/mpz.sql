@@ -77,6 +77,18 @@ SELECT 9223372036854775807::mpz::bigint;
 SELECT -9223372036854775807::mpz::bigint;
 SELECT 9223372036854775808::mpz::bigint;
 SELECT -9223372036854775808::mpz::bigint;
+SELECT 2147483648::mpz::bigint;
+SELECT -2147483648::mpz::bigint;
+SELECT (65536::mpz)::bigint;
+SELECT (65536::mpz*65536::mpz)::bigint;
+SELECT (65536::mpz*65536::mpz*65536::mpz)::bigint;
+SELECT (65536::mpz*65536::mpz*65536::mpz*65536::mpz/2::mpz-1::mpz)::bigint;
+SELECT (65536::mpz*65536::mpz*65536::mpz*65536::mpz/2::mpz)::bigint;
+SELECT (-65536::mpz)::bigint;
+SELECT (-65536::mpz*65536::mpz)::bigint;
+SELECT (-65536::mpz*65536::mpz*65536::mpz)::bigint;
+SELECT (-65536::mpz*65536::mpz*65536::mpz*65536::mpz/2::mpz+1::mpz)::bigint;
+SELECT (-65536::mpz*65536::mpz*65536::mpz*65536::mpz/2::mpz)::bigint;
 
 
 --
