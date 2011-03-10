@@ -185,31 +185,34 @@ PGMP_PG_FUNCTION(pmpz_to_int2)
 PGMP_PG_FUNCTION(pmpz_to_int8)
 {
     const pmpz      *pz;
-    const mpz_t     q;
+    const mpz_t     z;
     int64           out;
     char            *buffer;
-    bool            error;
+    short           error;
+    mp_limb_t       msLimb;
 
     pz = PG_GETARG_PMPZ(0);
-    mpz_from_pmpz(q, pz);
+    mpz_from_pmpz(z, pz);
 
 #if LONG_MAX == INT64_MAX
 
-    if (!mpz_fits_slong_p(q))
-		error=true;
+    if (!mpz_fits_slong_p(z))
+        error = true;
     else
-        out = mpz_get_si(q);
+        out = mpz_get_si(z);
 
 #elif LONG_MAX == INT32_MAX
 
-    buffer = mpz_get_str(NULL, 10, q);
+    buffer = mpz_get_str(NULL, 10, z);
 
-    error=false;
-    if (mpz_size(q)>2) error=true;
-    if (mpz_size(q)==2) {
-        if (q[0]._mp_d[1]>0x7fffffff)
-            error=true;
-	}
+    error = false;
+    if (mpz_size(z) > 2) error = true;
+    if (mpz_size(z) == 2) {
+        msLimb = mpz_getlimbn(z,1);
+        if (msLimb > 0x7fffffff) {
+            error = true;
+        }
+    }
 
     if (!error)
         sscanf(buffer,"%lld",&out);
