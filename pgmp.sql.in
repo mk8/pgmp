@@ -124,6 +124,16 @@ WITH FUNCTION mpz_to_int2(mpz)
 AS ASSIGNMENT;
 
 
+CREATE OR REPLACE FUNCTION mpz_to_numeric(mpz)
+RETURNS numeric
+AS 'MODULE_PATHNAME', 'pmpz_to_numeric'
+LANGUAGE C IMMUTABLE STRICT;
+
+CREATE CAST (mpz AS numeric)
+WITH FUNCTION mpz_to_numeric(mpz)
+AS ASSIGNMENT;
+
+
 -- TODO: stub - only good for ints
 CREATE CAST (numeric AS mpz)
 WITH INOUT
