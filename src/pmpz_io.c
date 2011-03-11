@@ -289,19 +289,3 @@ errorNotInt8Value:
              errmsg("numeric value too big to be converted in biginteger data type")));
 
 }
-
-PGMP_PG_FUNCTION(pmpz_to_numeric) {
-	
-    const mpz_t     z;
-    const pmpz      *pz;
-    char            *buffer;
-    void            *num;
-
-    pz = PG_GETARG_PMPZ(0);
-    mpz_from_pmpz(z, pz);
-    buffer = mpz_get_str(NULL, 10, z);
-    
-    num = DatumGetNumeric(DirectFunctionCall3(numeric_in, buffer,0,-1));
-
-    PG_RETURN_NUMERIC(num);
-}
