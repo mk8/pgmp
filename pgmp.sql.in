@@ -134,7 +134,7 @@ AS ASSIGNMENT;
 --AS ASSIGNMENT;
 CREATE CAST (mpz AS numeric)
 WITH INOUT
-AS IMPLICIT;
+AS ASSIGNMENT;
 
 
 -- TODO: stub - only good for ints
