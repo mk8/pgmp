@@ -25,6 +25,13 @@ SELECT '-1'::mpz;
 SELECT '10'::mpz;
 SELECT '-10'::mpz;
 
+SELECT ' 1'::mpz;
+SELECT ' 1.1'::mpz;
+SELECT ' .1'::mpz;
+SELECT ' .'::mpz;
+SELECT ' '::mpz;
+
+
 SELECT '000001'::mpz;       -- padding zeros
 SELECT '-000001'::mpz;
 

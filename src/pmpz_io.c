@@ -21,11 +21,11 @@
 
 #include "pmpz.h"
 #include "pgmp-impl.h"
+#include "pmp_util.h"
 
 #include "fmgr.h"
 
 #include <limits.h>
-
 
 /*
  * Input/Output functions
@@ -35,19 +35,39 @@ PGMP_PG_FUNCTION(pmpz_in)
 {
     char    *str;
     mpz_t   z;
+    char    *comma;
 
     str = PG_GETARG_CSTRING(0);
 
-    if (0 != mpz_init_set_str(z, str, 0))
-    {
-        const char *ell;
-        const int maxchars = 50;
-        ell = (strlen(str) > maxchars) ? "..." : "";
+    if (str != NULL) {
+        str = _strtrim(str);
+        
+        comma = strchr(str, '.');
+        if (comma != NULL) {
+            if (comma == str) {
+                *comma++ = '0';
+            }
+            *comma = 0;
+        }
 
-        ereport(ERROR, (
-            errcode(ERRCODE_INVALID_TEXT_REPRESENTATION),
-            errmsg("invalid input for mpz: \"%.*s%s\"",
-                maxchars, str, ell)));
+        if (*str == 0) {
+            ereport(ERROR, (
+                errcode(ERRCODE_ZERO_LENGTH_CHARACTER_STRING),
+                errmsg("empty string not allowed.")));
+        } else if (0 != mpz_init_set_str(z, str, 0)) {
+            const char *ell;
+            const int maxchars = 50;
+            ell = (strlen(str) > maxchars) ? "..." : "";
+
+            ereport(ERROR, (
+                errcode(ERRCODE_INVALID_TEXT_REPRESENTATION),
+                errmsg("invalid input for mpz: \"%.*s%s\"",
+                    maxchars, str, ell)));
+        }
+    } else {
+            ereport(ERROR, (
+                errcode(ERRCODE_INVALID_TEXT_REPRESENTATION),
+                errmsg("unable to read the input string.")));
     }
 
     PG_RETURN_MPZ(z);
