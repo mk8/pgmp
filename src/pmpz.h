@@ -24,6 +24,7 @@
 
 #include <gmp.h>
 #include "postgres.h"
+#include "utils/builtins.h"
 
 typedef struct
 {

@@ -33,6 +33,14 @@ SELECT ' '::mpz;
 ERROR:  invalid input for mpz: " "
 LINE 1: SELECT ' '::mpz;
                ^
+select mpz(' 10',8);
+8
+select mpz(' 10.2',8);
+8
+select mpz(' .',8);
+0
+select mpz(' .2',8);
+0
 SELECT '000001'::mpz;       -- padding zeros
 1
 SELECT '-000001'::mpz;

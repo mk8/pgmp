@@ -23,6 +23,7 @@
 #define __PMP_UTIL_H__
 
 #include <stdlib.h>
+#include <ctype.h>
 #include <gmp.h>
 
 extern char* _strtrim(char * src);

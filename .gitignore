@@ -4,3 +4,4 @@ pgmp.sql
 results/*.out
 regression.diffs
 regression.out
+src/*.o

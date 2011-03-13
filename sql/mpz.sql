@@ -31,6 +31,11 @@ SELECT ' .1'::mpz;
 SELECT ' .'::mpz;
 SELECT ' '::mpz;
 
+select mpz(' 10',8);
+select mpz(' 10.2',8);
+select mpz(' .',8);
+select mpz(' .2',8);
+
 
 SELECT '000001'::mpz;       -- padding zeros
 SELECT '-000001'::mpz;

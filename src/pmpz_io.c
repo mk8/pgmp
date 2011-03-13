@@ -73,15 +73,16 @@ PGMP_PG_FUNCTION(pmpz_in)
 
 PGMP_PG_FUNCTION(pmpz_in_base)
 {
-    text    *txt;
+    char    *txt;
+    char    *trimmed;
     int     base;
-    char    *str;
     mpz_t   z;
+    char    *comma;
 
     /* we don't get this as a cstring, because there is no implicit cast
      * from text, so mpz(expr, base) fails if expr is not a constant.
      */
-    txt = PG_GETARG_TEXT_P(0);
+    txt = text_to_cstring(PG_GETARG_TEXT_PP(0));
     base = PG_GETARG_INT32(1);
 
     if (!(2 <= base && base <= 62))
@@ -92,21 +93,33 @@ PGMP_PG_FUNCTION(pmpz_in_base)
             errhint("base should be between 2 and 62")));
     }
 
-    /* convert the input text into a null-terminated string */
-    str = (char *)palloc(VARSIZE(txt) + 1);
-    memcpy(str, VARDATA(txt), VARSIZE(txt));
-    str[VARSIZE(txt)] = '\0';
-
-    if (0 != mpz_init_set_str(z, str, base))
-    {
-        const char *ell;
-        const int maxchars = 50;
-        ell = (strlen(str) > maxchars) ? "..." : "";
-
+    if (*txt == 0) {
         ereport(ERROR, (
-            errcode(ERRCODE_INVALID_TEXT_REPRESENTATION),
-            errmsg("invalid input for mpz base %d: \"%.*s%s\"",
-                base, 50, str, ell)));
+            errcode(ERRCODE_ZERO_LENGTH_CHARACTER_STRING),
+            errmsg("empty string not allowed.")));
+    } else {
+        
+        trimmed = _strtrim(txt);
+        
+        comma = strchr(trimmed, '.');
+        if (comma != NULL) {
+            if (comma == trimmed) {
+                *comma++ = '0';
+            }
+            *comma = 0;
+        }
+
+        if (0 != mpz_init_set_str(z, trimmed, base))
+        {
+            const char *ell;
+            const int maxchars = 50;
+            ell = (strlen(txt) > maxchars) ? "..." : "";
+
+            ereport(ERROR, (
+                errcode(ERRCODE_INVALID_TEXT_REPRESENTATION),
+                errmsg("invalid input for mpz base %d: \"%.*s%s\"",
+                    base, 50, txt, ell)));
+        }
     }
 
     PG_RETURN_MPZ(z);
