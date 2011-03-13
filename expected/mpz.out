@@ -30,7 +30,7 @@ SELECT ' .1'::mpz;
 SELECT ' .'::mpz;
 0
 SELECT ' '::mpz;
-ERROR:  empty string not allowed.
+ERROR:  invalid input for mpz: " "
 LINE 1: SELECT ' '::mpz;
                ^
 SELECT '000001'::mpz;       -- padding zeros

@@ -34,27 +34,29 @@
 PGMP_PG_FUNCTION(pmpz_in)
 {
     char    *str;
+    char    *trimmed;
     mpz_t   z;
     char    *comma;
 
     str = PG_GETARG_CSTRING(0);
 
-    if (str != NULL) {
-        str = _strtrim(str);
+    if (*str == 0) {
+        ereport(ERROR, (
+            errcode(ERRCODE_ZERO_LENGTH_CHARACTER_STRING),
+            errmsg("empty string not allowed.")));
+    } else {
         
-        comma = strchr(str, '.');
+        trimmed = _strtrim(str);
+        
+        comma = strchr(trimmed, '.');
         if (comma != NULL) {
-            if (comma == str) {
+            if (comma == trimmed) {
                 *comma++ = '0';
             }
             *comma = 0;
         }
 
-        if (*str == 0) {
-            ereport(ERROR, (
-                errcode(ERRCODE_ZERO_LENGTH_CHARACTER_STRING),
-                errmsg("empty string not allowed.")));
-        } else if (0 != mpz_init_set_str(z, str, 0)) {
+        if (0 != mpz_init_set_str(z, trimmed, 0)) {
             const char *ell;
             const int maxchars = 50;
             ell = (strlen(str) > maxchars) ? "..." : "";
@@ -64,10 +66,6 @@ PGMP_PG_FUNCTION(pmpz_in)
                 errmsg("invalid input for mpz: \"%.*s%s\"",
                     maxchars, str, ell)));
         }
-    } else {
-            ereport(ERROR, (
-                errcode(ERRCODE_INVALID_TEXT_REPRESENTATION),
-                errmsg("unable to read the input string.")));
     }
 
     PG_RETURN_MPZ(z);
