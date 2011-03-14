@@ -24,11 +24,17 @@ SELECT '-10'::mpz;
 SELECT ' 1'::mpz;
 1
 SELECT ' 1.1'::mpz;
-1
+ERROR:  invalid input for mpz: " 1.1"
+LINE 1: SELECT ' 1.1'::mpz;
+               ^
 SELECT ' .1'::mpz;
-0
+ERROR:  invalid input for mpz: " .1"
+LINE 1: SELECT ' .1'::mpz;
+               ^
 SELECT ' .'::mpz;
-0
+ERROR:  invalid input for mpz: " ."
+LINE 1: SELECT ' .'::mpz;
+               ^
 SELECT ' '::mpz;
 ERROR:  invalid input for mpz: " "
 LINE 1: SELECT ' '::mpz;
@@ -36,11 +42,11 @@ LINE 1: SELECT ' '::mpz;
 select mpz(' 10',8);
 8
 select mpz(' 10.2',8);
-8
+ERROR:  invalid input for mpz base 8: " 10.2"
 select mpz(' .',8);
-0
+ERROR:  invalid input for mpz base 8: " ."
 select mpz(' .2',8);
-0
+ERROR:  invalid input for mpz base 8: " .2"
 SELECT '000001'::mpz;       -- padding zeros
 1
 SELECT '-000001'::mpz;
