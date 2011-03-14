@@ -72,6 +72,8 @@ SELECT text(10::mpz, 63);
 -- limited error
 SELECT ('xx' || repeat('1234567890', 10))::mpz;
 SELECT mpz('xx' || repeat('1234567890', 10), 42);
+
+
 --
 -- mpz cast
 --
@@ -80,6 +82,10 @@ SELECT 0::smallint::mpz, (-32768)::smallint::mpz, 32767::smallint::mpz;
 SELECT 0::integer::mpz, (-2147483648)::integer::mpz, 2147483647::integer::mpz;
 SELECT 0::bigint::mpz, (-9223372036854775808)::bigint::mpz, 9223372036854775807::bigint::mpz;
 SELECT 0::numeric::mpz, (-12345678901234567890)::numeric::mpz, 12345678901234567890::numeric::mpz;
+-- decimal are truncated
+SELECT 123.10::numeric::mpz, 123.90::numeric::mpz;
+SELECT (-123.10::numeric)::mpz, (-123.90::numeric)::mpz;
+SELECT 'NaN'::numeric::mpz;
 
 SELECT 0::mpz, 1::mpz, (-1)::mpz;       -- automatic casts
 SELECT 1000000::mpz, (-1000000)::mpz;
@@ -147,6 +153,7 @@ SELECT (-65536::mpz*65536::mpz*65536::mpz*65536::mpz+1::mpz)::numeric;
 
 SELECT -('0'::mpz), +('0'::mpz), -('1'::mpz), +('1'::mpz);
 SELECT -('12345678901234567890'::mpz), +('12345678901234567890'::mpz);
+SELECT abs('-1234567890'::mpz), abs('1234567890'::mpz);
 
 SELECT '1'::mpz + '2'::mpz;
 SELECT '2'::mpz + '-4'::mpz;
@@ -208,6 +215,8 @@ SELECT  '7'::mpz +%  '0'::mpz;
 SELECT  '7'::mpz -/  '0'::mpz;
 SELECT  '7'::mpz -%  '0'::mpz;
 
+SELECT  '21'::mpz /! '7'::mpz;
+
 SELECT  '10000000000'::mpz << 10;
 SELECT  '10000000000'::mpz << 0;
 SELECT  '10000000000'::mpz << -1;
@@ -233,6 +242,13 @@ SELECT  '1027'::mpz -%>   3;
 SELECT '-1027'::mpz -%>   3;
 SELECT  '1027'::mpz -%>  -3;
 
+-- power operator/functions
+SELECT 2::mpz ^ 10;
+SELECT 2::mpz ^ 0;
+SELECT 2::mpz ^ -1;
+SELECT pow(2::mpz, 10);
+SELECT pow(2::mpz, 0);
+SELECT pow(2::mpz, -1);
 
 --
 -- mpz ordering operators

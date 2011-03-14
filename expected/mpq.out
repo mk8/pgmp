@@ -90,9 +90,8 @@ SELECT 1000000000000000000000000000000::mpq, (-1000000000000000000000000000000):
 1000000000000000000000000000000|-1000000000000000000000000000000
 SELECT 0.0::mpq, (-1234567890.12345)::mpq, 1234567890.12345::mpq;
 0|-24691357802469/20000|24691357802469/20000
--- TODO: can we live with this error?
 SELECT 'NaN'::decimal::mpq;
-ERROR:  invalid input syntax for mpq: "NaN"
+ERROR:  can't convert numeric value to mpq: "NaN"
 SELECT -1::mpq;       -- these take the unary minus to work
 -1
 SELECT -1000000::mpq;
@@ -108,6 +107,18 @@ SELECT mpq(10, 4), mpq(10, -4);
 SELECT mpq(10, 0);
 ERROR:  denominator can't be zero
 SELECT mpq(47563485764385764395874365986384, 874539847539845639485769837553465);
+15854495254795254798624788662128/291513282513281879828589945851155
+SELECT mpq(1230::numeric, 123::numeric);
+10
+SELECT mpq(123.45::numeric, 1::numeric);
+ERROR:  can't handle numeric value at numerator: 123.45
+HINT:  the mpq components should be integers
+SELECT mpq(1::numeric, 123.45::numeric);
+ERROR:  can't handle numeric value at denominator: 123.45
+HINT:  the mpq components should be integers
+SELECT mpq(123::numeric, 0::numeric);
+ERROR:  denominator can't be zero
+SELECT mpq(47563485764385764395874365986384::mpz, 874539847539845639485769837553465::mpz);
 15854495254795254798624788662128/291513282513281879828589945851155
 SELECT mpq('10'::mpz, '0'::mpz);
 ERROR:  denominator can't be zero
