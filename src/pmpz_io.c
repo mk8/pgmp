@@ -99,6 +99,8 @@ PGMP_PG_FUNCTION(pmpz_in_base)
         }
     }
 
+    pfree(str);
+    
     PG_RETURN_MPZ(z);
 }
 
