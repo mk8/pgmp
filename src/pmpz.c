@@ -30,7 +30,11 @@ extern const mp_limb_t _pgmp_limb_0;
 
 
 /*
- * Create a new pmpz structure from the content of a mpz
+ * Create a pmpz structure from the content of a mpz.
+ *
+ * The function relies on the limbs being allocated using the GMP custom
+ * allocator: such allocator leaves PGMP_MAX_HDRSIZE bytes *before* the
+ * returned pointer. We scrubble that area prepending the pmpz header.
  */
 pmpz *
 pmpz_from_mpz(mpz_srcptr z)
@@ -38,25 +42,30 @@ pmpz_from_mpz(mpz_srcptr z)
     pmpz *res;
     int size = SIZ(z);
 
+    res = (pmpz *)((char *)LIMBS(z) - PMPZ_HDRSIZE);
+
     if (LIKELY(0 != size))
     {
         size_t slimbs;
+        int sign;
+
         if (size > 0) {
             slimbs = size * sizeof(mp_limb_t);
+            sign = 0;
         }
         else {
             slimbs = -size * sizeof(mp_limb_t);
+            sign = PMPZ_SIGN_MASK;
         }
 
-        res = (pmpz *)palloc(PMPZ_HDRSIZE + slimbs);
         SET_VARSIZE(res, PMPZ_HDRSIZE + slimbs);
-        res->size = size;
-        memcpy(&(res->data), LIMBS(z), slimbs);
+        res->mdata = sign;          /* implicit version: 0 */
     }
     else
     {
-        res = (pmpz *)palloc0(PMPZ_HDRSIZE);
+        /* In the zero representation there are no limbs */
         SET_VARSIZE(res, PMPZ_HDRSIZE);
+        res->mdata = 0;             /* version: 0 */
     }
 
     return res;
@@ -76,13 +85,23 @@ pmpz_from_mpz(mpz_srcptr z)
 void
 mpz_from_pmpz(mpz_srcptr z, const pmpz *pz)
 {
-    /* discard the const qualifier */
-    mpz_ptr wz = (mpz_ptr)z;
+    int nlimbs;
+    mpz_ptr wz;
 
-    if (LIKELY(pz->size != 0))
+    if (UNLIKELY(0 != (PMPZ_VERSION(pz)))) {
+        ereport(ERROR, (
+            errcode(ERRCODE_DATA_EXCEPTION),
+            errmsg("unsupported mpz version: %d", PMPZ_VERSION(pz))));
+    }
+
+    /* discard the const qualifier */
+    wz = (mpz_ptr)z;
+
+    nlimbs = (VARSIZE(pz) - PMPZ_HDRSIZE) / sizeof(mp_limb_t);
+    if (LIKELY(nlimbs != 0))
     {
-        ALLOC(wz) = ABS(pz->size);
-        SIZ(wz) = pz->size;
+        ALLOC(wz) = nlimbs;
+        SIZ(wz) = PMPZ_NEGATIVE(pz) ? -nlimbs : nlimbs;
         LIMBS(wz) = (mp_limb_t *)pz->data;
     }
     else
