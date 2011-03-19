@@ -215,11 +215,7 @@ PGMP_PG_FUNCTION(pmpz_sqrt)
 {
     const mpz_t     z1;
     mpz_t           zf;
-    int             nargs;
     
-    // Check if the root is specified
-    nargs = PG_NARGS();
-        
     mpz_from_pmpz(z1, PG_GETARG_PMPZ(0));
 
     mpz_init_set(zf, z1);
@@ -251,3 +247,5 @@ PGMP_PG_FUNCTION(pmpz_root)
 
     PG_RETURN_MPZ(zf);
 }
+
+PMPZ_UN(nextprime)

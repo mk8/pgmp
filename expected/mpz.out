@@ -490,3 +490,11 @@ SELECT mpz_root(27::mpz,3);
 3
 SELECT mpz_root(('1' || repeat('0',100))::mpz,3);
 2154434690031883721759293566519350
+SELECT mpz_nextprime(5::mpz);
+7
+SELECT mpz_nextprime(10::mpz);
+11
+SELECT mpz_nextprime(100::mpz);
+101
+SELECT mpz_nextprime(1000::mpz);
+1009

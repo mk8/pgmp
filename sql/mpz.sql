@@ -317,3 +317,8 @@ SELECT mpz_root(25::mpz);
 SELECT mpz_root(('1' || repeat('0',100))::mpz);
 SELECT mpz_root(27::mpz,3);
 SELECT mpz_root(('1' || repeat('0',100))::mpz,3);
+
+SELECT mpz_nextprime(5::mpz);
+SELECT mpz_nextprime(10::mpz);
+SELECT mpz_nextprime(100::mpz);
+SELECT mpz_nextprime(1000::mpz);
