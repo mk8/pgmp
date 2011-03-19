@@ -313,10 +313,29 @@ SELECT numeric_test_dataset(5, '123456'::numeric);
 SELECT mpz_sqrt(25::mpz);
 SELECT mpz_sqrt(('1' || repeat('0',100))::mpz);
 
-SELECT mpz_root(25::mpz);
-SELECT mpz_root(('1' || repeat('0',100))::mpz);
 SELECT mpz_root(27::mpz,3);
 SELECT mpz_root(('1' || repeat('0',100))::mpz,3);
+
+select mpz_perfect_power(26::mpz);
+select mpz_perfect_power(27::mpz);
+select mpz_perfect_power(65535::mpz);
+select mpz_perfect_power(65536::mpz);
+select mpz_perfect_power(-65536::mpz);
+select mpz_perfect_power(-65535::mpz);
+select mpz_perfect_power(('1' || repeat('0',100))::mpz);
+select mpz_perfect_power(('1' || repeat('0',10000))::mpz);
+select mpz_perfect_power(('1' || repeat('0',10001))::mpz);
+select mpz_perfect_power(('1' || repeat('0',10000))::mpz+1::mpz);
+
+select mpz_perfect_square(0::mpz);
+select mpz_perfect_square(1::mpz);
+select mpz_perfect_square(-1::mpz);
+select mpz_perfect_square(26::mpz);
+select mpz_perfect_square(27::mpz);
+select mpz_perfect_square(16777215::mpz);
+select mpz_perfect_square(16777216::mpz);
+select mpz_perfect_square(('1' || repeat('0',10000))::mpz);
+select mpz_perfect_square(('1' || repeat('0',10000))::mpz+1::mpz);
 
 SELECT mpz_nextprime(5::mpz);
 SELECT mpz_nextprime(10::mpz);

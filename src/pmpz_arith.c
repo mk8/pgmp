@@ -25,6 +25,7 @@
 #include "fmgr.h"
 
 
+
 /*
  * Unary minus, plus
  */
@@ -209,7 +210,7 @@ PMPZ_CMP(lt, <)
 PMPZ_CMP(le, <=)
 
 /*
- * Mathematisc functions
+ * Mathematics functions
  */
 PGMP_PG_FUNCTION(pmpz_sqrt)
 {
@@ -228,16 +229,12 @@ PGMP_PG_FUNCTION(pmpz_root)
 {
     const mpz_t     z1;
     mpz_t           zf;
-    int             nargs;
-    unsigned long   root = 2;
+    unsigned long   root;
     
-    // Check if the root is specified
-    nargs = PG_NARGS();
-    if (nargs == 2)
 #if LONG_MAX == INT64_MAX
-        root = PG_GETARG_UINT64(1);
+    root = PG_GETARG_UINT64(1);
 #else
-        root = PG_GETARG_UINT32(1);
+    root = PG_GETARG_UINT32(1);
 #endif
         
     mpz_from_pmpz(z1, PG_GETARG_PMPZ(0));
@@ -248,4 +245,23 @@ PGMP_PG_FUNCTION(pmpz_root)
     PG_RETURN_MPZ(zf);
 }
 
+PGMP_PG_FUNCTION(pmpz_perfect_power)
+{
+    const mpz_t     z1;
+    
+    mpz_from_pmpz(z1, PG_GETARG_PMPZ(0));
+
+    PG_RETURN_BOOL(mpz_perfect_power_p (z1));
+}
+
+PGMP_PG_FUNCTION(pmpz_perfect_square)
+{
+    const mpz_t     z1;
+    
+    mpz_from_pmpz(z1, PG_GETARG_PMPZ(0));
+
+    PG_RETURN_BOOL(mpz_perfect_square_p (z1));
+}
+
 PMPZ_UN(nextprime)
+
