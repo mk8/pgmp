@@ -63,7 +63,6 @@ PGMP_PG_FUNCTION(pmpz_ ## op) \
 PMPZ_UN(neg)
 PMPZ_UN(abs)
 
-
 /*
  * Binary operators
  */
@@ -209,3 +208,46 @@ PMPZ_CMP(ge, >=)
 PMPZ_CMP(lt, <)
 PMPZ_CMP(le, <=)
 
+/*
+ * Mathematisc functions
+ */
+PGMP_PG_FUNCTION(pmpz_sqrt)
+{
+    const mpz_t     z1;
+    mpz_t           zf;
+    int             nargs;
+    
+    // Check if the root is specified
+    nargs = PG_NARGS();
+        
+    mpz_from_pmpz(z1, PG_GETARG_PMPZ(0));
+
+    mpz_init_set(zf, z1);
+    mpz_sqrt (zf, zf);
+
+    PG_RETURN_MPZ(zf);
+}
+
+PGMP_PG_FUNCTION(pmpz_root)
+{
+    const mpz_t     z1;
+    mpz_t           zf;
+    int             nargs;
+    unsigned long   root = 2;
+    
+    // Check if the root is specified
+    nargs = PG_NARGS();
+    if (nargs == 2)
+#if LONG_MAX == INT64_MAX
+        root = PG_GETARG_UINT64(1);
+#else
+        root = PG_GETARG_UINT32(1);
+#endif
+        
+    mpz_from_pmpz(z1, PG_GETARG_PMPZ(0));
+
+    mpz_init_set(zf, z1);
+    mpz_root (zf, zf, root);
+
+    PG_RETURN_MPZ(zf);
+}
