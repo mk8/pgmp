@@ -128,10 +128,7 @@ PMPZ_OP_DIV(fdiv_r)
 PMPZ_OP_DIV(divexact)
 
 
-/* Functions defined on unsigned long */
-
 /* TODO: this function could take a INT64 argument */
-
 #define PMPZ_OP_UL(op) \
  \
 PGMP_PG_FUNCTION(pmpz_ ## op) \
@@ -154,9 +151,6 @@ PGMP_PG_FUNCTION(pmpz_ ## op) \
  \
     PG_RETURN_MPZ(zf); \
 }
-
-PMPZ_OP_UL(pow_ui)
-
 
 /* Functions defined on bit count
  *
@@ -398,6 +392,7 @@ PGMP_PG_FUNCTION(pmpz_powm)
     PG_RETURN_MPZ(zf);
 }
 
+/* TODO: this function could take a INT64 argument */
 PGMP_PG_FUNCTION(pmpz_powm_ui)
 {
     const mpz_t     zbase;
@@ -415,15 +410,44 @@ PGMP_PG_FUNCTION(pmpz_powm_ui)
 
     PG_RETURN_MPZ(zf);
 }
-/*
-— Function: void mpz_powm_sec (mpz_t rop, mpz_t base, mpz_t exp, mpz_t mod)
-Set rop to (base raised to exp) modulo mod.
 
-It is required that exp > 0 and that mod is odd.
+PGMP_PG_FUNCTION(pmpz_powm_sec)
+{
+    const mpz_t     zbase;
+    const mpz_t     zexp;
+    const mpz_t     zmod;
+    mpz_t           zf;
 
-This function is designed to take the same time and have the same cache access patterns for any two same-size arguments, assuming that function arguments are placed at the same position and that the machine state is identical upon function entry. This function is intended for cryptographic purposes, where resilience to side-channel attacks is desired.
+    mpz_from_pmpz(zbase, PG_GETARG_PMPZ(0));
+    mpz_from_pmpz(zexp, PG_GETARG_PMPZ(1));
+    mpz_from_pmpz(zmod, PG_GETARG_PMPZ(2));
 
-— Function: void mpz_pow_ui (mpz_t rop, mpz_t base, unsigned long int exp)
-— Function: void mpz_ui_pow_ui (mpz_t rop, unsigned long int base, unsigned long int exp)
-Set rop to base raised to exp. The case 0^0 yields 1.
-*/
+    mpz_init_set(zf, zbase);
+    mpz_powm (zf, zbase, zexp, zmod);
+
+    PG_RETURN_MPZ(zf);
+}
+
+PMPZ_OP_UL(pow_ui)
+
+/* TODO: this function could take a INT64 argument */
+PGMP_PG_FUNCTION(pmpz_ui_pow_ui)
+{
+    long   base;
+    long   exp;
+    mpz_t           zf;
+
+    base = PG_GETARG_INT32(0);
+    exp = PG_GETARG_INT32(1);
+
+    if (UNLIKELY(exp < 0)) {
+        ereport(ERROR, (
+            errcode(ERRCODE_INVALID_PARAMETER_VALUE),
+            errmsg("op2 can't be negative") ));
+    }
+
+    mpz_init (zf);
+    mpz_ui_pow_ui (zf, base, exp);
+
+    PG_RETURN_MPZ(zf);
+}

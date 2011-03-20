@@ -242,14 +242,6 @@ SELECT  '1027'::mpz -%>   3;
 SELECT '-1027'::mpz -%>   3;
 SELECT  '1027'::mpz -%>  -3;
 
--- power operator/functions
-SELECT 2::mpz ^ 10;
-SELECT 2::mpz ^ 0;
-SELECT 2::mpz ^ -1;
-SELECT pow(2::mpz, 10);
-SELECT pow(2::mpz, 0);
-SELECT pow(2::mpz, -1);
-
 --
 -- mpz ordering operators
 --
@@ -364,3 +356,20 @@ select powm(2::mpz,4::mpz,10::mpz);
 select powm(2::mpz,2,10::mpz);
 select powm(2::mpz,3,10::mpz);
 select powm(2::mpz,4,10::mpz);
+
+select powm_sec(2::mpz,2::mpz,10::mpz);
+select powm_sec(2::mpz,4::mpz,10::mpz);
+select powm_sec(2::mpz,6::mpz,10::mpz);
+select powm_sec(2::mpz,6::mpz,50::mpz);
+
+-- power operator/functions
+SELECT 2::mpz ^ 10;
+SELECT 2::mpz ^ 0;
+SELECT 2::mpz ^ -1;
+SELECT pow(2::mpz, 10);
+SELECT pow(2::mpz, 0);
+SELECT pow(2::mpz, -1);
+
+SELECT mpz_pow(2, 10);
+SELECT mpz_pow(2, 0);
+SELECT mpz_pow(2, -1);
