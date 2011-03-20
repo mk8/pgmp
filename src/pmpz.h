@@ -58,8 +58,29 @@ typedef struct
  \
     _tupdesc = BlessTupleDesc(_tupdesc); \
  \
-    _result[0] = (Datum)pmpz_from_mpz(zroot); \
-    _result[1] = (Datum)pmpz_from_mpz(zrem); \
+    _result[0] = (Datum)pmpz_from_mpz(z1); \
+    _result[1] = (Datum)pmpz_from_mpz(z2); \
+ \
+    return HeapTupleGetDatum(heap_form_tuple(_tupdesc, _result, _isnull)); \
+} \
+
+#define PG_RETURN_MPZ_MPZ_MPZ(z1,z2,z3) \
+{ \
+    TupleDesc       _tupdesc; \
+    Datum           _result[3]; \
+    bool            _isnull[3] = {0,0,0}; \
+ \
+    if (get_call_result_type(fcinfo, NULL, &_tupdesc) != TYPEFUNC_COMPOSITE) \
+        ereport(ERROR, \
+            (errcode(ERRCODE_FEATURE_NOT_SUPPORTED), \
+             errmsg("function returning composite called in context " \
+                    "that cannot accept type composite"))); \
+ \
+    _tupdesc = BlessTupleDesc(_tupdesc); \
+ \
+    _result[0] = (Datum)pmpz_from_mpz(z1); \
+    _result[1] = (Datum)pmpz_from_mpz(z2); \
+    _result[2] = (Datum)pmpz_from_mpz(z3); \
  \
     return HeapTupleGetDatum(heap_form_tuple(_tupdesc, _result, _isnull)); \
 } \

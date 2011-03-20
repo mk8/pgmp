@@ -66,7 +66,6 @@ PGMP_PG_FUNCTION(pmpz_ ## op) \
 PMPZ_UN(neg,    PMPZ_NO_CHECK)
 PMPZ_UN(abs,    PMPZ_NO_CHECK)
 PMPZ_UN(sqrt,   PMPZ_CHECK_NONEG)
-PMPZ_UN(nextprime,  PMPZ_NO_CHECK)
 
 
 /*
@@ -250,3 +249,166 @@ PGMP_PG_FUNCTION(pmpz_sqrtrem)
     PG_RETURN_MPZ_MPZ(zroot, zrem);
 }
 
+/*
+ * MPZ Number Theoretic Functions
+ */
+
+PGMP_PG_FUNCTION(pmpz_probab_prime_p)
+{
+    const mpz_t     z1;
+    int             reps;
+
+    mpz_from_pmpz(z1, PG_GETARG_PMPZ(0));
+    reps = PG_GETARG_INT32(1);
+
+    PG_RETURN_INT32(mpz_probab_prime_p (z1, reps));
+}
+
+PMPZ_UN(nextprime,  PMPZ_NO_CHECK)
+
+PGMP_PG_FUNCTION(pmpz_gcd)
+{
+    const mpz_t     z1;
+    const mpz_t     z2;
+    mpz_t           zf;
+
+    mpz_from_pmpz (z1, PG_GETARG_PMPZ(0));
+    mpz_from_pmpz (z2, PG_GETARG_PMPZ(1));
+    mpz_init (zf);
+
+    mpz_gcd (zf, z1, z2);
+    
+    PG_RETURN_MPZ(zf);
+}
+
+PGMP_PG_FUNCTION(pmpz_gcdext)
+{
+    const mpz_t     z1;
+    const mpz_t     z2;
+    mpz_t           zf;
+    mpz_t           zs;
+    mpz_t           zt;
+
+    mpz_from_pmpz (z1, PG_GETARG_PMPZ(0));
+    mpz_from_pmpz (z2, PG_GETARG_PMPZ(1));
+    mpz_init (zf);
+    mpz_init (zs);
+    mpz_init (zt);
+
+    mpz_gcdext (zf, zs, zt, z1, z2);
+    
+    PG_RETURN_MPZ_MPZ_MPZ (zf, zs, zt);
+}
+
+PGMP_PG_FUNCTION(pmpz_lcm)
+{
+    const mpz_t     z1;
+    const mpz_t     z2;
+    mpz_t           zf;
+
+    mpz_from_pmpz (z1, PG_GETARG_PMPZ(0));
+    mpz_from_pmpz (z2, PG_GETARG_PMPZ(1));
+    mpz_init (zf);
+
+    mpz_lcm (zf, z1, z2);
+    
+    PG_RETURN_MPZ(zf);
+}
+
+PGMP_PG_FUNCTION(pmpz_invert)
+{
+    const mpz_t     z1;
+    const mpz_t     z2;
+    mpz_t           zf;
+    int             ret;
+
+    mpz_from_pmpz (z1, PG_GETARG_PMPZ(0));
+    mpz_from_pmpz (z2, PG_GETARG_PMPZ(1));
+    mpz_init (zf);
+
+    ret = mpz_invert (zf, z1, z2);
+
+    if (ret != 0)
+        PG_RETURN_MPZ(zf);
+    else
+        PG_RETURN_NULL();
+}
+
+PGMP_PG_FUNCTION(pmpz_jacobi)
+{
+    const mpz_t     z1;
+    const mpz_t     z2;
+    int             ret;
+
+    mpz_from_pmpz (z1, PG_GETARG_PMPZ(0));
+    mpz_from_pmpz (z2, PG_GETARG_PMPZ(1));
+
+    // TODO: check for z2 odd otherwise the function is not defined.
+    ret = mpz_jacobi (z1, z2);
+
+    PG_RETURN_INT32(ret);
+}
+
+PGMP_PG_FUNCTION(pmpz_legendre)
+{
+    const mpz_t     z1;
+    const mpz_t     z2;
+    int             ret;
+
+    mpz_from_pmpz (z1, PG_GETARG_PMPZ(0));
+    mpz_from_pmpz (z2, PG_GETARG_PMPZ(1));
+
+    // TODO: check for z2 odd positive prime otherwise the function is not defined.
+    ret = mpz_legendre (z1, z2);
+
+    PG_RETURN_INT32(ret);
+}
+
+PGMP_PG_FUNCTION(pmpz_kronecker)
+{
+    const mpz_t     z1;
+    const mpz_t     z2;
+    int             ret;
+
+    mpz_from_pmpz (z1, PG_GETARG_PMPZ(0));
+    mpz_from_pmpz (z2, PG_GETARG_PMPZ(1));
+
+    // TODO: check for z2 odd positive prime otherwise the function is not defined.
+    ret = mpz_kronecker (z1, z2);
+
+    PG_RETURN_INT32(ret);
+}
+
+PGMP_PG_FUNCTION(pmpz_remove)
+{
+    const mpz_t      z1;
+    const mpz_t      z2;
+    mpz_t            zf;
+    unsigned long int ret;
+
+    mpz_from_pmpz (z1, PG_GETARG_PMPZ(0));
+    mpz_from_pmpz (z2, PG_GETARG_PMPZ(1));
+
+    mpz_init (zf);
+    
+    // TODO: actually the ret value is not returned. Decide if create a new function that retun two values
+    ret = mpz_remove (zf, z1, z2);
+
+    PG_RETURN_MPZ(zf);
+}
+
+/*
+— Function: unsigned long int mpz_gcd_ui (mpz_t rop, mpz_t op1, unsigned long int op2)
+— Function: void mpz_lcm_ui (mpz_t rop, mpz_t op1, unsigned long op2)
+— Function: int mpz_kronecker_si (mpz_t a, long b)
+— Function: int mpz_kronecker_ui (mpz_t a, unsigned long b)
+— Function: int mpz_si_kronecker (long a, mpz_t b)
+— Function: int mpz_ui_kronecker (unsigned long a, mpz_t b)
+— Function: void mpz_fac_ui (mpz_t rop, unsigned long int op)
+— Function: void mpz_bin_ui (mpz_t rop, mpz_t n, unsigned long int k)
+— Function: void mpz_bin_uiui (mpz_t rop, unsigned long int n, unsigned long int k)
+— Function: void mpz_fib_ui (mpz_t fn, unsigned long int n)
+— Function: void mpz_fib2_ui (mpz_t fn, mpz_t fnsub1, unsigned long int n)
+— Function: void mpz_lucnum_ui (mpz_t ln, unsigned long int n)
+— Function: void mpz_lucnum2_ui (mpz_t ln, mpz_t lnsub1, unsigned long int n)
+*/
