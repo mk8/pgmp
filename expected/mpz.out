@@ -472,6 +472,17 @@ select root from sqrtrem(1000::mpz);
 31
 select rem from sqrtrem(1000::mpz);
 39
+SELECT text('0b10001'::mpz & '0b01001'::mpz, 2);
+1
+SELECT text('0b10001'::mpz | '0b01001'::mpz, 2);
+11001
+SELECT text('0b10001'::mpz # '0b01001'::mpz, 2);
+11000
+SELECT text(-~'0b10001'::mpz, 2);
+-10010
+--
+-- Number Theoretic Functions
+--
 select perfect_power(26::mpz);
 f
 select perfect_power(27::mpz);

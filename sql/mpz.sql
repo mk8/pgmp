@@ -313,6 +313,14 @@ select * from sqrtrem(('1' || repeat('0',100))::mpz);
 select root from sqrtrem(1000::mpz);
 select rem from sqrtrem(1000::mpz);
 
+SELECT text('0b10001'::mpz & '0b01001'::mpz, 2);
+SELECT text('0b10001'::mpz | '0b01001'::mpz, 2);
+SELECT text('0b10001'::mpz # '0b01001'::mpz, 2);
+SELECT text(-~'0b10001'::mpz, 2);
+
+--
+-- Number Theoretic Functions
+--
 select perfect_power(26::mpz);
 select perfect_power(27::mpz);
 select perfect_power(65535::mpz);

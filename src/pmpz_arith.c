@@ -66,6 +66,7 @@ PGMP_PG_FUNCTION(pmpz_ ## op) \
 PMPZ_UN(neg,    PMPZ_NO_CHECK)
 PMPZ_UN(abs,    PMPZ_NO_CHECK)
 PMPZ_UN(sqrt,   PMPZ_CHECK_NONEG)
+PMPZ_UN(com,    PMPZ_NO_CHECK)
 
 
 /*
@@ -109,6 +110,9 @@ PMPZ_OP(cdiv_r,     PMPZ_CHECK_DIV0)
 PMPZ_OP(fdiv_q,     PMPZ_CHECK_DIV0)
 PMPZ_OP(fdiv_r,     PMPZ_CHECK_DIV0)
 PMPZ_OP(divexact,   PMPZ_CHECK_DIV0)
+PMPZ_OP(and,        PMPZ_NO_CHECK)
+PMPZ_OP(ior,        PMPZ_NO_CHECK)
+PMPZ_OP(xor,        PMPZ_NO_CHECK)
 
 
 /* Functions defined on unsigned long */
