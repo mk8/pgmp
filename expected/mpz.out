@@ -558,3 +558,15 @@ SELECT nextprime(100::mpz);
 101
 SELECT nextprime(1000::mpz);
 1009
+select powm(2::mpz,2::mpz,10::mpz);
+4
+select powm(2::mpz,3::mpz,10::mpz);
+8
+select powm(2::mpz,4::mpz,10::mpz);
+6
+select powm(2::mpz,2,10::mpz);
+4
+select powm(2::mpz,3,10::mpz);
+8
+select powm(2::mpz,4,10::mpz);
+6

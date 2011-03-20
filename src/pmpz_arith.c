@@ -276,11 +276,7 @@ PGMP_PG_FUNCTION(pmpz_rootrem)
     HeapTuple       tuple;
     Datum           result;
 
-#if LONG_MAX == INT64_MAX
-    n = PG_GETARG_UINT64(1);
-#else
     n = PG_GETARG_UINT32(1);
-#endif
     
     mpz_from_pmpz(z1, PG_GETARG_PMPZ(0));
 
@@ -380,3 +376,54 @@ PGMP_PG_FUNCTION(pmpz_sqrtrem)
 }
 
 PMPZ_UN(nextprime)
+
+/*
+ * Exponential functions
+ */
+
+PGMP_PG_FUNCTION(pmpz_powm)
+{
+    const mpz_t     zbase;
+    const mpz_t     zexp;
+    const mpz_t     zmod;
+    mpz_t           zf;
+
+    mpz_from_pmpz(zbase, PG_GETARG_PMPZ(0));
+    mpz_from_pmpz(zexp, PG_GETARG_PMPZ(1));
+    mpz_from_pmpz(zmod, PG_GETARG_PMPZ(2));
+
+    mpz_init_set(zf, zbase);
+    mpz_powm (zf, zbase, zexp, zmod);
+
+    PG_RETURN_MPZ(zf);
+}
+
+PGMP_PG_FUNCTION(pmpz_powm_ui)
+{
+    const mpz_t     zbase;
+    unsigned long   exp;
+    const mpz_t     zmod;
+    mpz_t           zf;
+
+    mpz_from_pmpz(zbase, PG_GETARG_PMPZ(0));
+    mpz_from_pmpz(zmod, PG_GETARG_PMPZ(2));
+
+    exp = PG_GETARG_UINT32(1);
+
+    mpz_init_set(zf, zbase);
+    mpz_powm_ui (zf, zbase, exp, zmod);
+
+    PG_RETURN_MPZ(zf);
+}
+/*
+— Function: void mpz_powm_sec (mpz_t rop, mpz_t base, mpz_t exp, mpz_t mod)
+Set rop to (base raised to exp) modulo mod.
+
+It is required that exp > 0 and that mod is odd.
+
+This function is designed to take the same time and have the same cache access patterns for any two same-size arguments, assuming that function arguments are placed at the same position and that the machine state is identical upon function entry. This function is intended for cryptographic purposes, where resilience to side-channel attacks is desired.
+
+— Function: void mpz_pow_ui (mpz_t rop, mpz_t base, unsigned long int exp)
+— Function: void mpz_ui_pow_ui (mpz_t rop, unsigned long int base, unsigned long int exp)
+Set rop to base raised to exp. The case 0^0 yields 1.
+*/

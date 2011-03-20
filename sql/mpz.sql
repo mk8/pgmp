@@ -356,3 +356,11 @@ SELECT nextprime(5::mpz);
 SELECT nextprime(10::mpz);
 SELECT nextprime(100::mpz);
 SELECT nextprime(1000::mpz);
+
+select powm(2::mpz,2::mpz,10::mpz);
+select powm(2::mpz,3::mpz,10::mpz);
+select powm(2::mpz,4::mpz,10::mpz);
+
+select powm(2::mpz,2,10::mpz);
+select powm(2::mpz,3,10::mpz);
+select powm(2::mpz,4,10::mpz);

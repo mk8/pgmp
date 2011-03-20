@@ -293,6 +293,15 @@ RETURNS RECORD
 AS 'MODULE_PATHNAME', 'pmpz_sqrtrem'
 LANGUAGE C IMMUTABLE STRICT;
 
+-- MPZ exponential functions
+
+!! PYON
+
+func('powm', 'mpz mpz mpz', 'mpz', cname='pmpz_powm')
+func('powm', 'mpz int4 mpz', 'mpz', cname='pmpz_powm_ui')
+
+!! PYOFF
+
 --
 -- Aggregation functions
 --
