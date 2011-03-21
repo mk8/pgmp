@@ -200,23 +200,19 @@ PMPZ_CMP(le, <=)
  * Unary predicates
  */
 
-PGMP_PG_FUNCTION(pmpz_perfect_power)
-{
-    const mpz_t     z1;
-
-    mpz_from_pmpz(z1, PG_GETARG_PMPZ(0));
-
-    PG_RETURN_BOOL(mpz_perfect_power_p(z1));
+#define PMPZ_BOOL(op) \
+ \
+PGMP_PG_FUNCTION(pmpz_ ## op) \
+{ \
+    const mpz_t     z1; \
+ \
+    mpz_from_pmpz(z1, PG_GETARG_PMPZ(0)); \
+ \
+    PG_RETURN_BOOL(mpz_ ## op (z1) ); \
 }
 
-PGMP_PG_FUNCTION(pmpz_perfect_square)
-{
-    const mpz_t     z1;
-
-    mpz_from_pmpz(z1, PG_GETARG_PMPZ(0));
-
-    PG_RETURN_BOOL(mpz_perfect_square_p(z1));
-}
+PMPZ_BOOL(perfect_power_p)
+PMPZ_BOOL(perfect_square_p)
 
 PGMP_PG_FUNCTION(pmpz_rootrem)
 {
@@ -270,20 +266,8 @@ PGMP_PG_FUNCTION(pmpz_probab_prime_p)
 
 PMPZ_UN(nextprime,  PMPZ_NO_CHECK)
 
-PGMP_PG_FUNCTION(pmpz_gcd)
-{
-    const mpz_t     z1;
-    const mpz_t     z2;
-    mpz_t           zf;
-
-    mpz_from_pmpz (z1, PG_GETARG_PMPZ(0));
-    mpz_from_pmpz (z2, PG_GETARG_PMPZ(1));
-    mpz_init (zf);
-
-    mpz_gcd (zf, z1, z2);
-    
-    PG_RETURN_MPZ(zf);
-}
+PMPZ_OP(gcd, PMPZ_NO_CHECK)
+PMPZ_OP(lcm, PMPZ_NO_CHECK)
 
 PGMP_PG_FUNCTION(pmpz_gcdext)
 {
@@ -304,20 +288,6 @@ PGMP_PG_FUNCTION(pmpz_gcdext)
     PG_RETURN_MPZ_MPZ_MPZ (zf, zs, zt);
 }
 
-PGMP_PG_FUNCTION(pmpz_lcm)
-{
-    const mpz_t     z1;
-    const mpz_t     z2;
-    mpz_t           zf;
-
-    mpz_from_pmpz (z1, PG_GETARG_PMPZ(0));
-    mpz_from_pmpz (z2, PG_GETARG_PMPZ(1));
-    mpz_init (zf);
-
-    mpz_lcm (zf, z1, z2);
-    
-    PG_RETURN_MPZ(zf);
-}
 
 PGMP_PG_FUNCTION(pmpz_invert)
 {
@@ -338,50 +308,25 @@ PGMP_PG_FUNCTION(pmpz_invert)
         PG_RETURN_NULL();
 }
 
-PGMP_PG_FUNCTION(pmpz_jacobi)
-{
-    const mpz_t     z1;
-    const mpz_t     z2;
-    int             ret;
-
-    mpz_from_pmpz (z1, PG_GETARG_PMPZ(0));
-    mpz_from_pmpz (z2, PG_GETARG_PMPZ(1));
-
-    // TODO: check for z2 odd otherwise the function is not defined.
-    ret = mpz_jacobi (z1, z2);
-
-    PG_RETURN_INT32(ret);
+#define PMPZ_INT32(op) \
+ \
+PGMP_PG_FUNCTION(pmpz_ ## op) \
+{ \
+    const mpz_t     z1; \
+    const mpz_t     z2; \
+    int             ret; \
+ \
+    mpz_from_pmpz(z1, PG_GETARG_PMPZ(0)); \
+    mpz_from_pmpz (z2, PG_GETARG_PMPZ(1)); \
+ \
+    ret = mpz_  ## op (z1, z2); \
+ \
+    PG_RETURN_INT32(ret); \
 }
 
-PGMP_PG_FUNCTION(pmpz_legendre)
-{
-    const mpz_t     z1;
-    const mpz_t     z2;
-    int             ret;
-
-    mpz_from_pmpz (z1, PG_GETARG_PMPZ(0));
-    mpz_from_pmpz (z2, PG_GETARG_PMPZ(1));
-
-    // TODO: check for z2 odd positive prime otherwise the function is not defined.
-    ret = mpz_legendre (z1, z2);
-
-    PG_RETURN_INT32(ret);
-}
-
-PGMP_PG_FUNCTION(pmpz_kronecker)
-{
-    const mpz_t     z1;
-    const mpz_t     z2;
-    int             ret;
-
-    mpz_from_pmpz (z1, PG_GETARG_PMPZ(0));
-    mpz_from_pmpz (z2, PG_GETARG_PMPZ(1));
-
-    // TODO: check for z2 odd positive prime otherwise the function is not defined.
-    ret = mpz_kronecker (z1, z2);
-
-    PG_RETURN_INT32(ret);
-}
+PMPZ_INT32(jacobi)
+PMPZ_INT32(legendre)
+PMPZ_INT32(kronecker)
 
 PGMP_PG_FUNCTION(pmpz_remove)
 {

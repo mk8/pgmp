@@ -150,5 +150,14 @@ void mpz_from_pmpz(mpz_srcptr z, const pmpz *pz);
     } \
 } while (0)
 
+#define PMPZ_CHECK_ODD(arg) \
+{ \
+    if (UNLIKELY(mpz_odd_p(arg) == 0)) { \
+        ereport(ERROR, ( \
+            errcode(ERRCODE_INVALID_PARAMETER_VALUE), \
+            errmsg("argument must be odd") )); \
+    } \
+} while (0)
+
 #endif  /* __PMPZ_H__ */
 

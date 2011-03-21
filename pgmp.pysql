@@ -290,8 +290,8 @@ DEFAULT FOR TYPE mpz USING btree AS
 
 func('sqrt', 'mpz', 'mpz', cname='pmpz_sqrt')
 func('root', 'mpz int8', 'mpz', cname='pmpz_root')
-func('perfect_power', 'mpz', 'bool', cname='pmpz_perfect_power')
-func('perfect_square', 'mpz', 'bool', cname='pmpz_perfect_square')
+func('perfect_power', 'mpz', 'bool', cname='pmpz_perfect_power_p')
+func('perfect_square', 'mpz', 'bool', cname='pmpz_perfect_square_p')
 
 !! PYOFF
 
