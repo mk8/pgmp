@@ -599,4 +599,6 @@ SELECT randseed(123456::mpz);
 SELECT urandomm(1000000::mpz);
 SELECT urandomm(1000000::mpz);
 
+SELECT min(z) FROM mpzagg;
+SELECT max(z) FROM mpzagg;
 

@@ -539,3 +539,26 @@ op('>>', 'div_2exp', rarg='int8')
 
 !! PYOFF
 
+CREATE OR REPLACE FUNCTION mpz_min(mpz, mpz)
+RETURNS mpz
+AS 'MODULE_PATHNAME', 'pmpz_min'
+LANGUAGE C IMMUTABLE STRICT;
+
+
+CREATE AGGREGATE min(mpz)  (
+    SFUNC = mpz_min,
+    STYPE = mpz,
+    SORTOP = <
+);
+
+CREATE OR REPLACE FUNCTION mpz_max(mpz, mpz)
+RETURNS mpz
+AS 'MODULE_PATHNAME', 'pmpz_max'
+LANGUAGE C IMMUTABLE STRICT;
+
+CREATE AGGREGATE max(mpz)  (
+    SFUNC = mpz_max,
+    STYPE = mpz,
+    SORTOP = >
+);
+

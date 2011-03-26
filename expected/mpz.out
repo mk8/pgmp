@@ -944,3 +944,7 @@ SELECT urandomm(1000000::mpz);
 112776
 SELECT urandomm(1000000::mpz);
 928797
+SELECT min(z) FROM mpzagg;
+1
+SELECT max(z) FROM mpzagg;
+100
