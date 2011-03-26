@@ -25,6 +25,9 @@
 #include <gmp.h>
 #include "postgres.h"
 
+// Check if the mp_bitcnt_t macro is defined
+typedef unsigned long int mp_bitcnt_t ;
+
 typedef struct
 {
     char        vl_len_[4];     /* varlena header */

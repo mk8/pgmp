@@ -320,32 +320,3 @@ PGMP_PG_FUNCTION(pmpz_powm)
 
     PGMP_RETURN_MPZ(zf);
 }
-
-
-
-
-/*
- * MPZ Aggregate functions
- */
-
-#define PMPZ_AGGR(op, rel) \
- \
-PGMP_PG_FUNCTION(pmpz_ ## op) \
-{ \
-    const mpz_t     z1; \
-    const mpz_t     z2; \
-    mpz_t           zf; \
- \
-    PGMP_GETARG_MPZ(z1, 0); \
-    PGMP_GETARG_MPZ(z2, 1); \
- \
-    if (mpz_cmp(z1, z2) rel 0) \
-        mpz_init_set ( zf, z1);\
-    else   \
-        mpz_init_set ( zf, z2);\
- \
-    PGMP_RETURN_MPZ(zf); \
-}
-
-PMPZ_AGGR(min, <)
-PMPZ_AGGR(max, >)
