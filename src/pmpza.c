@@ -164,7 +164,7 @@ PGMP_PG_FUNCTION(_pmpz_agg_ ## op) \
     if (LIKELY(LIMBS(*a))) { \
  \
         if (mpz_cmp(*a, z) rel 0) {\
-            mpz_init_set ( *a, z);\
+            mpz_set ( *a, z);\
         } \
     } \
     else { \
