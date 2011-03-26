@@ -460,6 +460,7 @@ CREATE AGGREGATE max (mpz)
     , STYPE = _mpza
     , FINALFUNC = _mpz_from_mpza
     , INITCOND = ''
+    , SORTOP = >
 );
 
 CREATE OR REPLACE FUNCTION _mpz_agg_min(_mpza, mpz)
@@ -473,6 +474,7 @@ CREATE AGGREGATE min (mpz)
     , STYPE = _mpza
     , FINALFUNC = _mpz_from_mpza
     , INITCOND = ''
+    , SORTOP = <
 );
 
 --

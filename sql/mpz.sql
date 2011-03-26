@@ -351,7 +351,10 @@ SELECT prod(z) FROM mpzagg;
 SELECT min(z) FROM mpzagg;
 SELECT max(z) FROM mpzagg;
 
+CREATE INDEX mpzagg_idx ON mpzagg(z);
 
+SELECT min(z) FROM mpzagg;
+SELECT max(z) FROM mpzagg;
 --
 -- test functions
 --
