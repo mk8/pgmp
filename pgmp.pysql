@@ -477,6 +477,45 @@ CREATE AGGREGATE min (mpz)
     , SORTOP = <
 );
 
+CREATE OR REPLACE FUNCTION _mpz_agg_bit_and(_mpza, mpz)
+RETURNS _mpza
+AS 'MODULE_PATHNAME', '_pmpz_agg_bit_and'
+LANGUAGE C IMMUTABLE STRICT;
+
+CREATE AGGREGATE bit_and (mpz)
+(
+      SFUNC = _mpz_agg_bit_and
+    , STYPE = _mpza
+    , FINALFUNC = _mpz_from_mpza
+    , INITCOND = ''
+);
+
+CREATE OR REPLACE FUNCTION _mpz_agg_bit_ior(_mpza, mpz)
+RETURNS _mpza
+AS 'MODULE_PATHNAME', '_pmpz_agg_bit_ior'
+LANGUAGE C IMMUTABLE STRICT;
+
+CREATE AGGREGATE bit_or (mpz)
+(
+      SFUNC = _mpz_agg_bit_ior
+    , STYPE = _mpza
+    , FINALFUNC = _mpz_from_mpza
+    , INITCOND = ''
+);
+
+CREATE OR REPLACE FUNCTION _mpz_agg_bit_xor(_mpza, mpz)
+RETURNS _mpza
+AS 'MODULE_PATHNAME', '_pmpz_agg_bit_xor'
+LANGUAGE C IMMUTABLE STRICT;
+
+CREATE AGGREGATE bit_xor (mpz)
+(
+      SFUNC = _mpz_agg_bit_xor
+    , STYPE = _mpza
+    , FINALFUNC = _mpz_from_mpza
+    , INITCOND = ''
+);
+
 --
 -- Test functions
 --

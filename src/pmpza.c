@@ -178,3 +178,39 @@ PGMP_PG_FUNCTION(_pmpz_agg_ ## op) \
 
 PMPZ_AGG_REL(min, >)
 PMPZ_AGG_REL(max, <)
+
+#define PMPZ_AGG_BIT(op) \
+ \
+PGMP_PG_FUNCTION(_pmpz_agg_bit_ ## op ) \
+{ \
+    mpz_t           *a; \
+    const mpz_t     z; \
+    MemoryContext   oldctx; \
+    MemoryContext   aggctx; \
+ \
+    /* TODO: make compatible with PG < 9 */ \
+    if (UNLIKELY(!AggCheckCallContext(fcinfo, &aggctx))) \
+    { \
+        ereport(ERROR, \
+            (errcode(ERRCODE_DATA_EXCEPTION), \
+            errmsg("_pmpz_agg_bit_and can only be called in accumulation"))); \
+    } \
+ \
+    a = (mpz_t *)PG_GETARG_POINTER(0); \
+    PGMP_GETARG_MPZ(z, 1); \
+ \
+    oldctx = MemoryContextSwitchTo(aggctx); \
+    if (LIKELY(LIMBS(*a))) { \
+		mpz_ ## op (*a, *a, z); \
+    } \
+    else { \
+        mpz_init_set(*a, z); \
+    } \
+    MemoryContextSwitchTo(oldctx); \
+ \
+    PG_RETURN_POINTER(a); \
+} \
+
+PMPZ_AGG_BIT(and)
+PMPZ_AGG_BIT(ior)
+PMPZ_AGG_BIT(xor)
