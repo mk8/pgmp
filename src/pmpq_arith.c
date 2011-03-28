@@ -57,6 +57,27 @@ PGMP_PG_FUNCTION(pmpq_uplus)
 
 
 /*
+ * Unary abs and inv functions
+ */
+#define PMPQ_UN(op) \
+ \
+PGMP_PG_FUNCTION(pmpq_ ## op) \
+{ \
+    const mpq_t     q1; \
+    mpq_t           qf; \
+ \
+    PGMP_GETARG_MPQ(q1, 0); \
+ \
+    mpq_init(qf); \
+    mpq_ ## op (qf, q1); \
+ \
+    PGMP_RETURN_MPQ(qf); \
+}
+
+PMPQ_UN(abs)
+PMPQ_UN(inv)
+
+/*
  * Binary operators
  */
 

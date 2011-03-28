@@ -528,6 +528,9 @@ CREATE OPERATOR + (
 
 !! PYON
 
+func('abs', 'mpq', 'mpq', volatile=True)
+func('inv', 'mpq', 'mpq', volatile=True)
+
 op('+', 'add', comm='+')
 op('-', 'sub')
 op('*', 'mul', comm='*')
