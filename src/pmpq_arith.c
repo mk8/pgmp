@@ -28,37 +28,19 @@
  * Unary minus, plus
  */
 
-PGMP_PG_FUNCTION(pmpq_uminus)
+PGMP_PG_FUNCTION(pmpq_uplus)
 {
     const mpq_t     q1;
     mpq_t           qf;
 
     PGMP_GETARG_MPQ(q1, 0);
 
-    mpz_init_set(mpq_numref(qf), mpq_numref(q1));
-    mpz_init_set(mpq_denref(qf), mpq_denref(q1));
-    mpz_neg(mpq_numref(qf), mpq_numref(qf));
+    mpq_init(qf);
+    mpq_set(qf, q1);
 
     PGMP_RETURN_MPQ(qf);
 }
 
-PGMP_PG_FUNCTION(pmpq_uplus)
-{
-    const pmpq      *pq1;
-    pmpq            *res;
-
-    pq1 = PGMP_GETARG_PMPQ(0);
-
-    res = (pmpq *)palloc(VARSIZE(pq1));
-    memcpy(res, pq1, VARSIZE(pq1));
-
-    PG_RETURN_POINTER(res);
-}
-
-
-/*
- * Unary abs and inv functions
- */
 #define PMPQ_UN(op) \
  \
 PGMP_PG_FUNCTION(pmpq_ ## op) \
@@ -74,8 +56,16 @@ PGMP_PG_FUNCTION(pmpq_ ## op) \
     PGMP_RETURN_MPQ(qf); \
 }
 
+PMPQ_UN(neg)
+
+
+/*
+ * Unary abs and inv functions
+ */
+
 PMPQ_UN(abs)
 PMPQ_UN(inv)
+
 
 /*
  * Binary operators
