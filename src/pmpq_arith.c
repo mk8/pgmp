@@ -30,15 +30,15 @@
 
 PGMP_PG_FUNCTION(pmpq_uplus)
 {
-    const mpq_t     q1;
-    mpq_t           qf;
+    const pmpq      *pq1;
+    pmpq            *res;
 
-    PGMP_GETARG_MPQ(q1, 0);
+    pq1 = PGMP_GETARG_PMPQ(0);
 
-    mpq_init(qf);
-    mpq_set(qf, q1);
+    res = (pmpq *)palloc(VARSIZE(pq1));
+    memcpy(res, pq1, VARSIZE(pq1));
 
-    PGMP_RETURN_MPQ(qf);
+    PG_RETURN_POINTER(res);
 }
 
 #define PMPQ_UN(op) \
@@ -65,7 +65,6 @@ PMPQ_UN(neg)
 
 PMPQ_UN(abs)
 PMPQ_UN(inv)
-
 
 /*
  * Binary operators
